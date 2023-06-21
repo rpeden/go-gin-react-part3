@@ -1,7 +1,10 @@
+import React, { useState } from 'react';
+import  { useNavigate } from 'react-router-dom';
+
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,7 +18,7 @@ const Login = () => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('userId', data.id);
-            history.push('/chat');
+            navigate('/chat');
         } else {
             alert('Login failed');
         }

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CreateUser = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,7 +16,7 @@ const CreateUser = () => {
         });
 
         if (response.ok) {
-            history.push('/login');
+            navigate('/login');
         } else {
             alert('Account creation failed');
         }

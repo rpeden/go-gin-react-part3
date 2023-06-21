@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ChannelsList from './ChannelsList';
 import MessagesPanel from './MessagesPanel';
 
 const MainChat = () => {
     const { channelId } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate();
     const [selectedChannel, setSelectedChannel] = useState(channelId || null);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const MainChat = () => {
 
     const handleChannelSelect = (channelId) => {
         setSelectedChannel(channelId);
-        history.push(`/chat/${channelId}`);
+        navigate(`/chat/${channelId}`);
     };
 
     return (
