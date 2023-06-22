@@ -27,6 +27,7 @@ type Message struct {
 	ID        int    `json:"id"`
 	ChannelID int    `json:"channel_id"`
 	UserID    int    `json:"user_id"`
+	UserName  string `json:"user_name"`
 	Text      string `json:"text"`
 }
 
@@ -219,7 +220,7 @@ func createMessage(c *gin.Context, db *sql.DB) {
 // Message listing endpoint.
 func listMessages(c *gin.Context, db *sql.DB) {
 	// Parse channel ID from URL
-	channelID, err := strconv.Atoi(c.Param("channelID"))
+	channelID, err := strconv.Atoi(c.Query("channelID"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -240,7 +241,7 @@ func listMessages(c *gin.Context, db *sql.DB) {
 	}
 
 	// Query database for messages
-	rows, err := db.Query("SELECT id, channel_id, user_id, message FROM messages WHERE channel_id = ? AND id > ? ORDER BY id ASC LIMIT ?", channelID, lastMessageID, limit)
+	rows, err := db.Query("SELECT m.id, channel_id, user_id, u.username AS user_name, message FROM messages m LEFT JOIN users u ON u.id = m.user_id WHERE channel_id = ? AND m.id > ? ORDER BY m.id ASC LIMIT ?", channelID, lastMessageID, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -255,7 +256,7 @@ func listMessages(c *gin.Context, db *sql.DB) {
 		var message Message
 
 		// Scan row into message
-		err := rows.Scan(&message.ID, &message.ChannelID, &message.UserID, &message.Text)
+		err := rows.Scan(&message.ID, &message.ChannelID, &message.UserID, &message.UserName, &message.Text)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
