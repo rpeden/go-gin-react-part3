@@ -1,28 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MessageEntry from './MessageEntry';
 
 const MessagesPanel = ({ selectedChannel }) => {
     const [messages, setMessages] = useState([]);
+    const lastMessageIdRef = useRef(null); // Keep track of the last message ID
 
     useEffect(() => {
-        if (selectedChannel) {
-            fetch(`/messages?channelID=${selectedChannel}`)
-                .then(response => response.json())
-                .then(data => setMessages(data));
-        }
-    }, [selectedChannel]);
+        if (!selectedChannel) return;
 
-    const handleNewMessage = (message) => {
-        setMessages([...messages, message]);
-    };
+        let isMounted = true; // flag to prevent state updates after unmount
+        let intervalId = null;
+
+        const fetchMessages = async () => {
+            const response = await fetch(`/messages?channelID=${selectedChannel.id}`);
+            const data = await response.json();
+            if (isMounted) {
+                setMessages(data || []);
+                lastMessageIdRef.current = data.length > 0 ? data[data.length - 1].id : null;
+            }
+        };
+
+        fetchMessages();
+
+        intervalId = setInterval(() => {
+            if (lastMessageIdRef.current !== null) {
+                fetch(`/messages?channelID=${selectedChannel.id}&lastMessageID=${lastMessageIdRef.current}`)
+                    .then(response => response.json())
+                    .then(newMessages => {
+                        if (isMounted && Array.isArray(newMessages) && newMessages.length > 0) {
+                            setMessages((messages) => {
+                                const updatedMessages = [...messages, ...newMessages];
+                                lastMessageIdRef.current = updatedMessages[updatedMessages.length - 1].id;
+                                return updatedMessages;
+                            });
+                        }
+                    });
+            }
+        }, 5000); // Poll every 5 seconds
+
+        return () => {
+            isMounted = false; // prevent further state updates
+            clearInterval(intervalId); // clear interval on unmount
+        };
+    }, [selectedChannel]);
 
     return (
         <div className="flex flex-col h-full">
-            <div className="overflow-auto">
+            {selectedChannel && (
+                <div className="bg-gray-700 text-white p-2">
+                    Messages for {selectedChannel.name}
+                </div>
+            )}
+            <div className="overflow-auto flex-grow">
                 {selectedChannel ? (
                     messages.map((message) => (
                         <div key={message.id} className="p-2 border-b">
-                            <strong>{message.userID}</strong>: {message.text}
+                            <strong>{message.user_name}</strong>: {message.text}
                         </div>
                     ))
                 ) : (
@@ -32,7 +65,11 @@ const MessagesPanel = ({ selectedChannel }) => {
             {selectedChannel && (
                 <MessageEntry
                     selectedChannel={selectedChannel}
-                    onNewMessage={handleNewMessage}
+                    onNewMessage={(message) => {
+                            lastMessageIdRef.current = message.id;
+                            setMessages([...messages, message])
+                        }
+                    }
                 />
             )}
         </div>

@@ -18,6 +18,7 @@ const Login = () => {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('userId', data.id);
+            localStorage.setItem('userName', username);
             navigate('/chat');
         } else {
             alert('Login failed');
