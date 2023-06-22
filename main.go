@@ -69,6 +69,11 @@ func main() {
 	// Login endpoint
 	r.POST("/login", func(c *gin.Context) { login(c, db) })
 
+	// Explicitly serve index.html at the root
+	r.StaticFile("/", "chat-ui/build/index.html")
+	// Serve static files under /static
+	r.StaticFS("/static", http.Dir("chat-ui/build/static"))
+
 	err = r.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
