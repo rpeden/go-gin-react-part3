@@ -51,13 +51,19 @@ const MessagesPanel = ({ selectedChannel }) => {
                     Messages for {selectedChannel.name}
                 </div>
             )}
-            <div className="overflow-auto flex-grow">
+            <div className={`overflow-auto flex-grow ${selectedChannel && messages.length === 0 ? 'flex items-center justify-center' : ''}`}>
                 {selectedChannel ? (
-                    messages.map((message) => (
-                        <div key={message.id} className="p-2 border-b">
-                            <strong>{message.user_name}</strong>: {message.text}
+                    messages.length > 0 ? (
+                        messages.map((message) => (
+                            <div key={message.id} className="p-2 border-b">
+                                <strong>{message.user_name}</strong>: {message.text}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-center text-gray-600">
+                            No messages yet! Why not send one?
                         </div>
-                    ))
+                    )
                 ) : (
                     <div className="p-2">Please select a channel</div>
                 )}
@@ -66,9 +72,9 @@ const MessagesPanel = ({ selectedChannel }) => {
                 <MessageEntry
                     selectedChannel={selectedChannel}
                     onNewMessage={(message) => {
-                            lastMessageIdRef.current = message.id;
-                            setMessages([...messages, message])
-                        }
+                        lastMessageIdRef.current = message.id;
+                        setMessages([...messages, message])
+                    }
                     }
                 />
             )}

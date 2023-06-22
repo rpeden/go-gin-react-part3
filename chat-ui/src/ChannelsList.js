@@ -19,7 +19,7 @@ const ChannelsList = ({ selectedChannel, setSelectedChannel }) => {
         const fetchChannels = async () => {
             const response = await fetch('/channels');
             const data = await response.json();
-            setChannels(data);
+            setChannels(data || []);
         };
         fetchChannels();
     }, []);
@@ -44,17 +44,23 @@ const ChannelsList = ({ selectedChannel, setSelectedChannel }) => {
                 Channels
             </div>
             <div className="overflow-y-auto flex-grow p-4">
-                <ul className="w-full">
-                    {channels.map((channel) => (
-                        <li
-                            key={channel.id}
-                            className={`p-2 rounded-md w-full cursor-pointer ${parseInt(channelId) === channel.id ? 'bg-blue-500 text-white' : 'hover:bg-gray-200'}`}
-                            onClick={() => setSelectedChannel(channel)}
-                        >
-                            {channel.name}
-                        </li>
-                    ))}
-                </ul>
+                {channels ? (
+                    <ul className="w-full">
+                        {channels.map((channel) => (
+                            <li
+                                key={channel.id}
+                                className={`p-2 rounded-md w-full cursor-pointer ${parseInt(channelId) === channel.id ? 'bg-blue-500 text-white' : 'hover:bg-gray-200'}`}
+                                onClick={() => setSelectedChannel(channel)}
+                            >
+                                {channel.name}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div className="text-center text-gray-600">
+                        Please add a Channel
+                    </div>
+                )}
             </div>
             <div className="flex flex-col p-4">
                 <input
