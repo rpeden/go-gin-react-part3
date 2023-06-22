@@ -16,7 +16,7 @@ const CreateUser = () => {
         });
 
         if (response.ok) {
-            navigate('/login');
+            navigate('/');
         } else {
             alert('Account creation failed');
         }
