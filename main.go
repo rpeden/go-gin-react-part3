@@ -80,7 +80,7 @@ func main() {
 	}
 }
 
-// User creation endpoint.
+// User creation endpoint
 func createUser(c *gin.Context, db *sql.DB) {
 	// Parse JSON request body into User struct
 	var user User
@@ -107,7 +107,7 @@ func createUser(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
-// Login endpoint.
+// Login endpoint
 func login(c *gin.Context, db *sql.DB) {
 	// Parse JSON request body into User struct
 	var user User
@@ -136,7 +136,7 @@ func login(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
-// Channel creation endpoint.
+// Channel creation endpoint
 func createChannel(c *gin.Context, db *sql.DB) {
 	// Parse JSON request body into Channel struct
 	var channel Channel
@@ -163,7 +163,7 @@ func createChannel(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
-// Channel listing endpoint.
+// Channel listing endpoint
 func listChannels(c *gin.Context, db *sql.DB) {
 	// Query database for channels
 	rows, err := db.Query("SELECT id, name FROM channels")
@@ -195,7 +195,7 @@ func listChannels(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, channels)
 }
 
-// Message creation endpoint.
+// Message creation endpoint
 func createMessage(c *gin.Context, db *sql.DB) {
 	// Parse JSON request body into Message struct
 	var message Message
@@ -222,7 +222,7 @@ func createMessage(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
-// Message listing endpoint.
+// Message listing endpoint
 func listMessages(c *gin.Context, db *sql.DB) {
 	// Parse channel ID from URL
 	channelID, err := strconv.Atoi(c.Query("channelID"))
