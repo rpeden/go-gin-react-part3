@@ -8,14 +8,7 @@ const MainChat = () => {
     const navigate = useNavigate();
     const [selectedChannel, setSelectedChannel] = useState(parseInt(channelId) || null);
 
-    /*useEffect(() => {
-        if (channelId) {
-            setSelectedChannel({ name: "", id: parseInt(channelId) });
-        }
-    }, [channelId]);*/
-
-
-
+    // If the component loads with a channel ID in the URL, set it as the selected channel.
     useEffect(() => {
         if (selectedChannel) {
             navigate(`/chat/${selectedChannel.id}`);
