@@ -15,8 +15,9 @@ const MessagesPanel = ({ selectedChannel }) => {
             const response = await fetch(`/messages?channelID=${selectedChannel.id}`);
             const data = await response.json();
             if (isMounted) {
-                setMessages(data || []);
-                lastMessageIdRef.current = data.length > 0 ? data[data.length - 1].id : null;
+                let messageData = data || [];
+                setMessages(messageData);
+                lastMessageIdRef.current = messageData.length > 0 ? messageData[messageData.length - 1].id : null;
             }
         };
 

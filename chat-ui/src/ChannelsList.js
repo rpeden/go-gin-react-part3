@@ -33,7 +33,7 @@ const ChannelsList = ({ selectedChannel, setSelectedChannel }) => {
 
         if (response.ok) {
             const newChannel = await response.json();
-            setChannels([...channels, newChannel]);
+            setChannels([...channels, { id: newChannel.id, name: newChannelName }]);
             setNewChannelName('');
         }
     };
