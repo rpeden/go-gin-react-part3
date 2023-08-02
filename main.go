@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("Working directory:", wd)
 
 	// Open the SQLite database file
-	db, err := sql.Open("sqlite", wd+"./database.db")
+	db, err := sql.Open("sqlite", wd+"/database.db")
 
 	defer func(db *sql.DB) {
 		err := db.Close()
